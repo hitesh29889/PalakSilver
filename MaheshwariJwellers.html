@@ -78,12 +78,20 @@
       size: A4 portrait;
       margin: 10mm;
     }
+    .editable-field {
+      outline: none;
+      border-bottom: 1px dashed #999;
+      min-width: 80px;
+      display: inline-block;
+      cursor: text;
+    }
     @media print {
       body { background: #fff; }
       #add-form-wrap, #print-btn-wrap { display: none !important; }
       .invoice-wrap { margin: 0; box-shadow: none; border: 2px solid #000; width: 100%; }
       .btn-del { display: none; }
       .no-print { display: none; }
+      .editable-field { border-bottom: none; }
     }
   </style>
 </head>
@@ -151,9 +159,9 @@
     </div>
     <div class="inv-meta-right">
       <table>
-        <tr><td>Invoice No.</td><td>: GT/4</td></tr>
-        <tr><td>Date</td><td>: 05/05/2026</td></tr>
-        <tr><td>Transport</td><td>: SAINATH ANGANIYA</td></tr>
+        <tr><td>Invoice No.</td><td>: <span id="invoiceNo" contenteditable="true" class="editable-field">GT/4</span></td></tr>
+        <tr><td>Date</td><td>: <span id="invoiceDate"></span></td></tr>
+        <tr><td>Transport</td><td>: <span id="transportName" contenteditable="true" class="editable-field">SAINATH ANGANIYA</span></td></tr>
       </table>
     </div>
   </div>
@@ -370,6 +378,15 @@
   document.getElementById('add-form-wrap').addEventListener('keydown', function(e) {
     if (e.key === 'Enter') addItem();
   });
+
+  // Set today's date
+  (function() {
+    var now = new Date();
+    var dd = String(now.getDate()).padStart(2, '0');
+    var mm = String(now.getMonth() + 1).padStart(2, '0');
+    var yyyy = now.getFullYear();
+    document.getElementById('invoiceDate').textContent = dd + '/' + mm + '/' + yyyy;
+  })();
 
   // Initial fill on load
   fillEmptyRows();
