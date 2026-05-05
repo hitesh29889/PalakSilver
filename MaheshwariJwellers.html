@@ -76,7 +76,7 @@
 
     @page {
       size: A4 portrait;
-      margin: 10mm;
+      margin: 0;
     }
     .editable-field {
       outline: none;
@@ -86,7 +86,7 @@
       cursor: text;
     }
     @media print {
-      body { background: #fff; }
+      body { background: #fff; padding: 10mm; }
       #add-form-wrap, #print-btn-wrap { display: none !important; }
       .invoice-wrap { margin: 0; box-shadow: none; border: 2px solid #000; width: 100%; }
       .btn-del { display: none; }
