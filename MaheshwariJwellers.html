@@ -300,9 +300,13 @@
     document.getElementById('gstWords').textContent   = amtInWords(igstTotal);
     document.getElementById('billWords').textContent  = amtInWords(grand);
 
-    document.querySelectorAll('#itemBody tr').forEach(function(r, i) {
+    document.querySelectorAll('#itemBody tr:not(.empty-row)').forEach(function(r, i) {
       var first = r.querySelector('td:first-child');
       if (first) first.textContent = i + 1;
+    });
+    document.querySelectorAll('#itemBody tr.empty-row').forEach(function(r) {
+      var first = r.querySelector('td:first-child');
+      if (first) first.innerHTML = '&nbsp;';
     });
   }
 
@@ -319,7 +323,7 @@
 
     var amount = qty * rate;
     var tbody  = document.getElementById('itemBody');
-    var rowCount = tbody.querySelectorAll('tr').length + 1;
+    var rowCount = tbody.querySelectorAll('tr:not(.empty-row)').length + 1;
 
     var tr = document.createElement('tr');
     tr.dataset.igst = igstPc;
