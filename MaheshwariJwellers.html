@@ -9,21 +9,23 @@
     body { font-family: "Times New Roman", serif; font-size: 13px; background: #e8e8e8; color: #000; }
 
     #add-form-wrap {
-      background: #1a237e; color: #fff; padding: 14px 20px;
-      display: flex; flex-wrap: wrap; gap: 10px; align-items: flex-end;
+      background: #1a237e; color: #fff; padding: 16px 16px;
+      display: flex; flex-wrap: wrap; gap: 12px; align-items: flex-end;
     }
-    #add-form-wrap h3 { width: 100%; font-size: 14px; margin-bottom: 4px; letter-spacing: .5px; }
-    #add-form-wrap label { display: flex; flex-direction: column; gap: 3px; font-size: 11px; font-weight: bold; text-transform: uppercase; }
+    #add-form-wrap h3 { width: 100%; font-size: 15px; margin-bottom: 4px; letter-spacing: .5px; }
+    #add-form-wrap label { display: flex; flex-direction: column; gap: 4px; font-size: 12px; font-weight: bold; text-transform: uppercase; flex: 1 1 140px; }
     #add-form-wrap input, #add-form-wrap select {
-      padding: 5px 8px; border: none; border-radius: 3px; font-size: 12px; min-width: 110px; color: #000;
+      padding: 9px 10px; border: none; border-radius: 4px; font-size: 15px; width: 100%; color: #000;
     }
-    #add-form-wrap input[name="productName"] { min-width: 200px; }
-    .btn { padding: 7px 18px; border: none; border-radius: 4px; cursor: pointer; font-size: 12px; font-weight: bold; letter-spacing: .4px; }
-    .btn-add  { background: #00c853; color: #fff; }
+    #add-form-wrap input[name="productName"] { min-width: unset; }
+    #add-form-wrap label.btn-wrap { flex: 1 1 100%; }
+    .btn { padding: 10px 22px; border: none; border-radius: 4px; cursor: pointer; font-size: 14px; font-weight: bold; letter-spacing: .4px; touch-action: manipulation; }
+    .btn-add  { background: #00c853; color: #fff; width: 100%; }
     .btn-add:hover  { background: #00a040; }
     .btn-print { background: #ff6f00; color: #fff; }
     .btn-print:hover { background: #e65100; }
-    #print-btn-wrap { background: #37474f; padding: 10px 20px; display: flex; justify-content: flex-end; }
+    #print-btn-wrap { background: #37474f; padding: 12px 16px; display: flex; justify-content: stretch; }
+    #print-btn-wrap .btn-print { flex: 1; font-size: 15px; padding: 12px; }
     .btn-del { background: transparent; border: none; cursor: pointer; color: #c62828; font-size: 15px; font-weight: bold; padding: 0 4px; }
     .btn-del:hover { color: #b71c1c; }
 
@@ -126,7 +128,7 @@
       <option value="28">28%</option>
     </select>
   </label>
-  <label>&nbsp;
+  <label class="btn-wrap">&nbsp;
     <button class="btn btn-add" onclick="addItem()">+ Add Item</button>
   </label>
 </div>
