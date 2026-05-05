@@ -1,0 +1,378 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TAX INVOICE – PALAK SILVER</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: "Times New Roman", serif; font-size: 13px; background: #e8e8e8; color: #000; }
+
+    #add-form-wrap {
+      background: #1a237e; color: #fff; padding: 14px 20px;
+      display: flex; flex-wrap: wrap; gap: 10px; align-items: flex-end;
+    }
+    #add-form-wrap h3 { width: 100%; font-size: 14px; margin-bottom: 4px; letter-spacing: .5px; }
+    #add-form-wrap label { display: flex; flex-direction: column; gap: 3px; font-size: 11px; font-weight: bold; text-transform: uppercase; }
+    #add-form-wrap input, #add-form-wrap select {
+      padding: 5px 8px; border: none; border-radius: 3px; font-size: 12px; min-width: 110px; color: #000;
+    }
+    #add-form-wrap input[name="productName"] { min-width: 200px; }
+    .btn { padding: 7px 18px; border: none; border-radius: 4px; cursor: pointer; font-size: 12px; font-weight: bold; letter-spacing: .4px; }
+    .btn-add  { background: #00c853; color: #fff; }
+    .btn-add:hover  { background: #00a040; }
+    .btn-print { background: #ff6f00; color: #fff; }
+    .btn-print:hover { background: #e65100; }
+    #print-btn-wrap { background: #37474f; padding: 10px 20px; display: flex; justify-content: flex-end; }
+    .btn-del { background: transparent; border: none; cursor: pointer; color: #c62828; font-size: 15px; font-weight: bold; padding: 0 4px; }
+    .btn-del:hover { color: #b71c1c; }
+
+    .invoice-wrap { width: 760px; margin: 14px auto; background: #fff; border: 2px solid #000; box-shadow: 0 2px 10px rgba(0,0,0,.3); }
+
+    .inv-header { border-bottom: 2px solid #000; padding: 8px 12px; }
+    .inv-header h1 { font-size: 22px; font-weight: bold; text-align: center; letter-spacing: 1px; text-transform: uppercase; }
+    .inv-header h2 { font-size: 12px; text-align: center; font-weight: normal; }
+    .inv-type { text-align: center; font-size: 15px; font-weight: bold; letter-spacing: 2px; padding: 5px 0; border-bottom: 1.5px solid #000; }
+
+    .inv-meta { display: flex; border-bottom: 1.5px solid #000; }
+    .inv-meta-left { flex: 1; padding: 8px 12px; border-right: 1.5px solid #000; }
+    .inv-meta-right { width: 240px; padding: 8px 12px; }
+    .inv-meta-right table { width: 100%; }
+    .inv-meta-right td { padding: 2px 0; vertical-align: top; font-size: 12px; }
+    .inv-meta-right td:first-child { font-weight: bold; white-space: nowrap; padding-right: 4px; }
+    .field-label { font-weight: bold; font-size: 12px; }
+    .field-val   { font-size: 12px; }
+
+    .items-table { width: 100%; border-collapse: collapse; min-height: 260px; }
+    .items-table th, .items-table td { border: 1px solid #000; padding: 4px 6px; font-size: 12px; }
+    .items-table tbody tr.empty-row td { border-left: 1px solid #000; border-right: 1px solid #000; border-top: none; border-bottom: none; height: 22px; }
+    .items-table thead { background: #f5f5f5; }
+    .items-table th { text-align: center; font-size: 11px; font-weight: bold; white-space: nowrap; }
+    .items-table td.num { text-align: right; }
+    .items-table td.center { text-align: center; }
+    .items-table tfoot td { font-weight: bold; font-size: 12px; }
+    .items-table tfoot td.num { text-align: right; }
+
+    .summary-wrap { display: flex; border-top: 1.5px solid #000; }
+    .bank-info { flex: 1; padding: 8px 12px; border-right: 1.5px solid #000; font-size: 11.5px; }
+    .bank-info .bi-row { display: flex; margin-bottom: 3px; }
+    .bank-info .bi-label { font-weight: bold; min-width: 110px; }
+    .totals-box { width: 340px; }
+    .totals-box table { width: 100%; border-collapse: collapse; }
+    .totals-box td { border: 1px solid #000; padding: 4px 8px; font-size: 12px; }
+    .totals-box td:last-child { text-align: right; min-width: 110px; }
+    .totals-box tr.grand td { font-weight: bold; font-size: 13px; background: #fffde7; }
+
+    .amt-words { border-top: 1.5px solid #000; padding: 6px 12px; font-size: 11.5px; }
+    .amt-words span { font-weight: bold; }
+
+    .inv-footer { display: flex; border-top: 1.5px solid #000; }
+    .terms { flex: 1; padding: 8px 12px; border-right: 1.5px solid #000; font-size: 11px; }
+    .terms h4 { font-size: 11.5px; margin-bottom: 4px; }
+    .terms ol { padding-left: 16px; }
+    .terms li { margin-bottom: 3px; line-height: 1.4; }
+    .signatory { width: 220px; padding: 8px 12px; text-align: center; font-size: 12px; display: flex; flex-direction: column; justify-content: space-between; }
+    .signatory .sig-line { border-top: 1px solid #000; margin-top: 50px; padding-top: 4px; font-size: 11px; }
+
+    @page {
+      size: A4 portrait;
+      margin: 10mm;
+    }
+    @media print {
+      body { background: #fff; }
+      #add-form-wrap, #print-btn-wrap { display: none !important; }
+      .invoice-wrap { margin: 0; box-shadow: none; border: 2px solid #000; width: 100%; }
+      .btn-del { display: none; }
+      .no-print { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<div id="add-form-wrap">
+  <h3>Add Item to Invoice</h3>
+  <label>Product Name
+    <input type="text" name="productName" placeholder="e.g. MIX SILVER ORNAMENTS" />
+  </label>
+  <label>HSN / SAC
+    <input type="text" name="hsn" placeholder="e.g. 7113" />
+  </label>
+  <label>Qty (gm)
+    <input type="number" name="qty" placeholder="0.000" step="0.001" min="0" />
+  </label>
+  <label>Rate (Rs/kg)
+    <input type="number" name="rate" placeholder="0.00" step="0.01" min="0" />
+  </label>
+  <label>IGST %
+    <select name="igst">
+      <option value="0">0%</option>
+      <option value="3" selected>3%</option>
+      <option value="5">5%</option>
+      <option value="12">12%</option>
+      <option value="18">18%</option>
+      <option value="28">28%</option>
+    </select>
+  </label>
+  <label>&nbsp;
+    <button class="btn btn-add" onclick="addItem()">+ Add Item</button>
+  </label>
+</div>
+
+<div id="print-btn-wrap">
+  <button class="btn btn-print" onclick="window.print()">Print / Save as PDF</button>
+</div>
+
+<div class="invoice-wrap">
+
+  <div class="inv-header">
+    <h1>PALAK SILVER</h1>
+	<h2>BRAHMANI KRUPA, STREET NO 3., KUVADAVA ROAD, VRUNDAVAN PARK-C</h2>
+  </div>
+
+  <div class="inv-type">TAX INVOICE</div>
+
+  <div class="inv-meta">
+    <div class="inv-meta-left">
+      <div class="field-label">M/s. :</div>
+      <div class="field-val" style="font-weight:bold; font-size:13px;">RAJENDRA ABHUSHAN KENDRA (KHERLI WALE)</div>
+      <div class="field-val">CHAUBEJI KA FATAK, KINARI BAZAR,</div>
+      <div class="field-val">AGRA - 282003</div>
+      <br />
+      <div style="display:flex; gap:30px;">
+        <div>
+          <span class="field-label">Place of Supply :</span>
+          <span class="field-val">09-Uttar Pradesh</span>
+        </div>
+      </div>
+      <div style="margin-top:4px;">
+        <span class="field-label">GSTIN No. :</span>
+        <span class="field-val">09ADGPA8676H1Z9</span>
+      </div>
+    </div>
+    <div class="inv-meta-right">
+      <table>
+        <tr><td>Invoice No.</td><td>: GT/4</td></tr>
+        <tr><td>Date</td><td>: 05/05/2026</td></tr>
+        <tr><td>Transport</td><td>: SAINATH ANGANIYA</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <table class="items-table" id="itemsTable">
+    <thead>
+      <tr>
+        <th style="width:38px">Sr.No.</th>
+        <th>Product Name</th>
+        <th style="width:70px">HSN/SAC</th>
+        <th style="width:75px">Qty (gm)</th>
+        <th style="width:95px">Rate (Rs/kg)</th>
+        <th style="width:55px">IGST %</th>
+        <th style="width:100px">Amount (Rs)</th>
+        <th style="width:32px" class="no-print">Del</th>
+      </tr>
+    </thead>
+    <tbody id="itemBody">
+      <tr data-igst="3">
+        <td class="center">1</td>
+        <td>MIX SILVER ORNAMENTS</td>
+        <td class="center">7113</td>
+        <td class="num">8.036</td>
+        <td class="num">92,330.00</td>
+        <td class="center">3.00</td>
+        <td class="num item-amount">741,963.88</td>
+        <td class="center no-print"><button class="btn-del" onclick="deleteRow(this)" title="Remove">X</button></td>
+      </tr>
+    </tbody>
+    <tfoot>
+      <tr>
+		<td colspan="4"><div style="font-size:11px; color:#555;">GSTIN No.: 24ARDPM2259D1Z4</div></td>
+        <td colspan="2" style="text-align:right; font-weight:bold;">Sub Total</td>
+        <td class="num" id="subTotal">741,963.88</td>
+        <td class="no-print"></td>
+      </tr>
+    </tfoot>
+  </table>
+
+  <div class="summary-wrap">
+    <div class="bank-info">
+      <div class="bi-row"><span class="bi-label">Bank Name</span><span>: HDFC BANK</span></div>
+      <div class="bi-row"><span class="bi-label">Bank A/c No.</span><span>: 50200091255986</span></div>
+      <div class="bi-row"><span class="bi-label">RTGS/IFSC Code</span><span>: HDFC0001697</span></div>
+      <br />
+      
+    </div>
+    <div class="totals-box">
+      <table>
+        <tr><td>Taxable Amount</td><td id="taxableAmt">7,41,963.88</td></tr>
+        <tr><td id="igstLabel">Integrated Tax (3.00%)</td><td id="igstAmt">22,258.92</td></tr>
+        <tr><td>Round Off</td><td id="roundOff">0.20</td></tr>
+        <tr class="grand"><td>Grand Total</td><td id="grandTotal">Rs. 7,64,223.00</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="amt-words">
+    <span>Total GST :</span> <span id="gstWords">Twenty Two Thousand Two Hundred Fifty Eight And Ninety Two Paise Only</span><br />
+    <span>Bill Amount :</span> <span id="billWords">Seven Lakh Sixty Four Thousand Two Hundred Twenty Three Only</span>
+  </div>
+
+  <div class="inv-footer">
+    <div class="terms">
+      <h4>Terms &amp; Condition :</h4>
+      <ol>
+        <li>Goods once sold will not be taken back.</li>
+        <li>Interest @18% p.a. will be charged if payment is not made within due date.</li>
+        <li>Our risk and responsibility ceases as soon as the goods leave our premises.</li>
+        <li>"Subject to 'RAJKOT-360003' Jurisdiction only. E.&amp;O.E"</li>
+      </ol>
+      <div style="margin-top:8px; font-size:11px;"><strong>Note :</strong></div>
+    </div>
+    <div class="signatory">
+      <div>For, PALAK SILVER</div>
+      <div class="sig-line">(Authorised Signatory)</div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  function fmt(n) {
+    return n.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  }
+  function ones(n) {
+    var w = ['','One','Two','Three','Four','Five','Six','Seven','Eight',
+             'Nine','Ten','Eleven','Twelve','Thirteen','Fourteen','Fifteen',
+             'Sixteen','Seventeen','Eighteen','Nineteen'];
+    return w[n] || '';
+  }
+  function tens(n) {
+    var w = ['','','Twenty','Thirty','Forty','Fifty','Sixty','Seventy','Eighty','Ninety'];
+    return n < 20 ? ones(n) : (w[Math.floor(n/10)] + (n%10 ? ' '+ones(n%10) : ''));
+  }
+  function toWords(n) {
+    n = Math.floor(n);
+    if (n === 0) return 'Zero';
+    var str = '';
+    if (n >= 10000000) { str += toWords(Math.floor(n/10000000)) + ' Crore '; n %= 10000000; }
+    if (n >= 100000)   { str += toWords(Math.floor(n/100000))   + ' Lakh '; n %= 100000; }
+    if (n >= 1000)     { str += toWords(Math.floor(n/1000))     + ' Thousand '; n %= 1000; }
+    if (n >= 100)      { str += ones(Math.floor(n/100))         + ' Hundred '; n %= 100; }
+    if (n > 0)         { str += tens(n); }
+    return str.trim();
+  }
+  function amtInWords(amount) {
+    var rupees = Math.floor(amount);
+    var paise  = Math.round((amount - rupees) * 100);
+    var w = toWords(rupees) + ' Only';
+    if (paise > 0) w = toWords(rupees) + ' And ' + toWords(paise) + ' Paise Only';
+    return w;
+  }
+
+  function recalc() {
+    var rows = document.querySelectorAll('#itemBody tr');
+    var taxable = 0;
+    var igstTotal = 0;
+    rows.forEach(function(row) {
+      var amtCell = row.querySelector('.item-amount');
+      if (!amtCell) return;
+      var amt  = parseFloat(amtCell.textContent.replace(/,/g, '')) || 0;
+      var igst = parseFloat(row.dataset.igst) || 0;
+      taxable   += amt;
+      igstTotal += amt * igst / 100;
+    });
+    var exact   = taxable + igstTotal;
+    var rounded = Math.round(exact);
+    var roundOff = rounded - exact;
+    var grand   = exact + roundOff;
+    var avgRate = taxable > 0 ? (igstTotal / taxable * 100) : 0;
+
+    document.getElementById('subTotal').textContent   = fmt(taxable);
+    document.getElementById('taxableAmt').textContent = fmt(taxable);
+    document.getElementById('igstLabel').textContent  = 'Integrated Tax (' + avgRate.toFixed(2) + '%)';
+    document.getElementById('igstAmt').textContent    = fmt(igstTotal);
+    document.getElementById('roundOff').textContent   = fmt(roundOff);
+    document.getElementById('grandTotal').textContent = 'Rs. ' + fmt(grand);
+    document.getElementById('gstWords').textContent   = amtInWords(igstTotal);
+    document.getElementById('billWords').textContent  = amtInWords(grand);
+
+    document.querySelectorAll('#itemBody tr').forEach(function(r, i) {
+      var first = r.querySelector('td:first-child');
+      if (first) first.textContent = i + 1;
+    });
+  }
+
+  function addItem() {
+    var form = document.getElementById('add-form-wrap');
+    var name  = form.querySelector('[name=productName]').value.trim();
+    var hsn   = form.querySelector('[name=hsn]').value.trim();
+    var qty   = parseFloat(form.querySelector('[name=qty]').value) || 0;
+    var rate  = parseFloat(form.querySelector('[name=rate]').value) || 0;
+    var igstPc = parseFloat(form.querySelector('[name=igst]').value) || 0;
+
+    if (!name) { alert('Please enter a product name.'); return; }
+    if (qty <= 0) { alert('Quantity must be greater than zero.'); return; }
+
+    var amount = qty * rate;
+    var tbody  = document.getElementById('itemBody');
+    var rowCount = tbody.querySelectorAll('tr').length + 1;
+
+    var tr = document.createElement('tr');
+    tr.dataset.igst = igstPc;
+    tr.innerHTML =
+      '<td class="center">' + rowCount + '</td>' +
+      '<td>' + name + '</td>' +
+      '<td class="center">' + hsn + '</td>' +
+      '<td class="num">' + qty.toFixed(3) + '</td>' +
+      '<td class="num">' + fmt(rate) + '</td>' +
+      '<td class="center">' + igstPc.toFixed(2) + '</td>' +
+      '<td class="num item-amount">' + fmt(amount) + '</td>' +
+      '<td class="center no-print"><button class="btn-del" onclick="deleteRow(this)" title="Remove">X</button></td>';
+    tbody.appendChild(tr);
+
+    form.querySelector('[name=productName]').value = '';
+    form.querySelector('[name=hsn]').value = '';
+    form.querySelector('[name=qty]').value = '';
+    form.querySelector('[name=rate]').value = '';
+    form.querySelector('[name=igst]').value = '3';
+
+    recalc();
+    fillEmptyRows();
+    form.querySelector('[name=productName]').focus();
+  }
+
+  function deleteRow(btn) {
+    btn.closest('tr').remove();
+    recalc();
+    fillEmptyRows();
+  }
+
+  // Keep table at a fixed visual height by padding with blank rows
+  var FIXED_ROWS = 10;
+  function fillEmptyRows() {
+    var tbody = document.getElementById('itemBody');
+    // Remove old filler rows
+    tbody.querySelectorAll('.empty-row').forEach(function(r) { r.remove(); });
+    var used = tbody.querySelectorAll('tr:not(.empty-row)').length;
+    var cols = 8; // number of columns
+    for (var i = used; i < FIXED_ROWS; i++) {
+      var tr = document.createElement('tr');
+      tr.className = 'empty-row';
+      for (var c = 0; c < cols; c++) {
+        var td = document.createElement('td');
+        td.innerHTML = '&nbsp;';
+        if (c === cols - 1) td.className = 'no-print';
+        tr.appendChild(td);
+      }
+      tbody.appendChild(tr);
+    }
+  }
+
+  document.getElementById('add-form-wrap').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') addItem();
+  });
+
+  // Initial fill on load
+  fillEmptyRows();
+</script>
+</body>
+</html>
