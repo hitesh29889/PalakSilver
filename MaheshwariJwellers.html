@@ -149,25 +149,25 @@
   <div class="inv-meta">
     <div class="inv-meta-left">
       <div class="field-label">M/s. :</div>
-      <div class="field-val" style="font-weight:bold; font-size:13px;">RAJENDRA ABHUSHAN KENDRA (KHERLI WALE)</div>
-      <div class="field-val">CHAUBEJI KA FATAK, KINARI BAZAR,</div>
-      <div class="field-val">AGRA - 282003</div>
+      <div class="field-val editable-field" id="msName" contenteditable="true" style="font-weight:bold; font-size:13px;">RAJENDRA ABHUSHAN KENDRA (KHERLI WALE)</div>
+      <div class="field-val editable-field" id="msAddress1" contenteditable="true">CHAUBEJI KA FATAK, KINARI BAZAR,</div>
+      <div class="field-val editable-field" id="msAddress2" contenteditable="true">AGRA - 282003</div>
       <br />
       <div style="display:flex; gap:30px;">
         <div>
           <span class="field-label">Place of Supply :</span>
-          <span class="field-val">09-Uttar Pradesh</span>
+          <span class="field-val editable-field" id="placeOfSupply" contenteditable="true">09-Uttar Pradesh</span>
         </div>
       </div>
       <div style="margin-top:4px;">
         <span class="field-label">GSTIN No. :</span>
-        <span class="field-val">09ADGPA8676H1Z9</span>
+        <span class="field-val editable-field" id="gstinNo" contenteditable="true">09ADGPA8676H1Z9</span>
       </div>
     </div>
     <div class="inv-meta-right">
       <table>
         <tr><td>Invoice No.</td><td>: <span id="invoiceNo" contenteditable="true" class="editable-field">GT/4</span></td></tr>
-        <tr><td>Date</td><td>: <span id="invoiceDate"></span></td></tr>
+        <tr><td>Date</td><td>: <span id="invoiceDate" contenteditable="true" class="editable-field"></span></td></tr>
         <tr><td>Transport</td><td>: <span id="transportName" contenteditable="true" class="editable-field">SAINATH ANGANIYA</span></td></tr>
       </table>
     </div>
@@ -382,13 +382,16 @@
     if (e.key === 'Enter') addItem();
   });
 
-  // Set today's date
+  // Set today's date if not already set
   (function() {
-    var now = new Date();
-    var dd = String(now.getDate()).padStart(2, '0');
-    var mm = String(now.getMonth() + 1).padStart(2, '0');
-    var yyyy = now.getFullYear();
-    document.getElementById('invoiceDate').textContent = dd + '/' + mm + '/' + yyyy;
+    var dateEl = document.getElementById('invoiceDate');
+    if (!dateEl.textContent.trim()) {
+      var now = new Date();
+      var dd = String(now.getDate()).padStart(2, '0');
+      var mm = String(now.getMonth() + 1).padStart(2, '0');
+      var yyyy = now.getFullYear();
+      dateEl.textContent = dd + '/' + mm + '/' + yyyy;
+    }
   })();
 
   // Initial fill on load
