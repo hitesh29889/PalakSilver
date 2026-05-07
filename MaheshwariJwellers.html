@@ -136,7 +136,7 @@
 
 <div id="print-btn-wrap">
   <button class="btn btn-print" onclick="window.print()">Print</button>
-  <button class="btn btn-print" style="margin-left:10px;background:#0097a7;" onclick="saveAsPDF()">Save as PDF</button>
+  <button class="btn btn-print" style="margin-left:10px;background:#0097a7;" onclick="downloadPDF()">Download PDF</button>
 </div>
 
 <div class="invoice-wrap">
@@ -245,10 +245,18 @@
 </div>
 
 <script>
-  // Save as PDF function: opens print dialog and shows a hint for PDF
-  function saveAsPDF() {
-    alert('PDF બનાવા માટે પ્રિન્ટર ઓપ્શન માં "Save AS PDF" સિલેક્ટ કરો..');
-    window.print();
+  // Download PDF function using html2pdf.js
+  function downloadPDF() {
+    var invoiceNoWithoutSpecialChar = document.getElementById('invoiceNo').textContent.trim().replace(/[^a-zA-Z0-9]/g, '_') || 'invoice';
+    var element = document.querySelector('.invoice-wrap');
+    var opt = {
+      margin:       0,
+      filename:     invoiceNoWithoutSpecialChar + '.pdf',
+      image:        { type: 'jpeg', quality: 0.98 },
+      html2canvas:  { scale: 2 },
+      jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+    };
+    html2pdf().set(opt).from(element).save();
   }
   function fmt(n) {
     return n.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
@@ -405,5 +413,6 @@
   // Initial fill on load
   fillEmptyRows();
 </script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 </body>
 </html>
