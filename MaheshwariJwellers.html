@@ -6,7 +6,7 @@
   <title>TAX INVOICE – PALAK SILVER</title>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: Verdana, Geneva, sans-serif; font-size: 13px; background: #e8e8e8; color: #000; }
+    body { font-family: "Times New Roman", serif; font-size: 13px; background: #e8e8e8; color: #000; }
 
     #add-form-wrap {
       background: #1a237e; color: #fff; padding: 16px 16px;
@@ -49,6 +49,13 @@
 
     .items-table { width: 100%; border-collapse: collapse; min-height: 260px; }
     .items-table th, .items-table td { border: 1px solid #000; padding: 4px 6px; font-size: 12px; }
+    .items-table tbody tr:not(.empty-row) td {
+      border-bottom: none;
+      border-top: none;
+    }
+    .items-table tbody tr:last-child td {
+      border-bottom: 1px solid #000;
+    }
     .items-table tbody tr.empty-row td { border-left: 1px solid #000; border-right: 1px solid #000; border-top: none; border-bottom: none; height: 22px; }
     .items-table thead { background: #f5f5f5; }
     .items-table th { text-align: center; font-size: 11px; font-weight: bold; white-space: nowrap; }
