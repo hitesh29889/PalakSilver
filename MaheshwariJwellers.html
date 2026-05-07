@@ -6,7 +6,7 @@
   <title>TAX INVOICE – PALAK SILVER</title>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: "Times New Roman", serif; font-size: 13px; background: #e8e8e8; color: #000; }
+    body { font-family: Verdana, Geneva, sans-serif; font-size: 13px; background: #e8e8e8; color: #000; }
 
     #add-form-wrap {
       background: #1a237e; color: #fff; padding: 16px 16px;
@@ -150,25 +150,21 @@
 	<h2>BRAHMANI KRUPA, STREET NO 3., KUVADAVA ROAD, VRUNDAVAN PARK-C</h2>
   </div>
 
-  <div class="inv-type">TAX INVOICE</div>
+  <div class="inv-type" style="display:flex;justify-content:space-between;align-items:center;">
+    <span style="flex:1;text-align:left; font-size: x-small;">Debit Memo</span>
+    <span style="flex:1;text-align:center;">TAX INVOICE</span>
+    <span style="flex:1;text-align:right; font-size: x-small;">Original</span>
+  </div>
 
   <div class="inv-meta">
-    <div class="inv-meta-left">
-      <div class="field-label">M/s. :</div>
-      <div class="field-val editable-field" id="msName" contenteditable="true" style="font-weight:bold; font-size:13px;">RAJENDRA ABHUSHAN KENDRA (KHERLI WALE)</div>
-      <div class="field-val editable-field" id="msAddress1" contenteditable="true">CHAUBEJI KA FATAK, KINARI BAZAR,</div>
-      <div class="field-val editable-field" id="msAddress2" contenteditable="true">AGRA - 282003</div>
-      <br />
-      <div style="display:flex; gap:30px;">
-        <div>
-          <span class="field-label">Place of Supply :</span>
-          <span class="field-val editable-field" id="placeOfSupply" contenteditable="true">09-Uttar Pradesh</span>
-        </div>
-      </div>
-      <div style="margin-top:4px;">
-        <span class="field-label">GSTIN No. :</span>
-        <span class="field-val editable-field" id="gstinNo" contenteditable="true">09ADGPA8676H1Z9</span>
-      </div>
+    <div class="inv-meta-left" id="clientDetails">
+        <textarea id="clientDetailsTextarea" style="width:100%;min-height:110px;font-size:13px; resize: none; border: none; padding: 5px;">
+          M/s. : RAJENDRA ABHUSHAN KENDRA (KHERLI WALE)
+          CHAUBEJI KA FATAK, KINARI BAZAR,
+          AGRA - 282003
+          Place of Supply : 09-Uttar Pradesh
+          GSTIN No. : 09ADGPA8676H1Z9
+        </textarea>
     </div>
     <div class="inv-meta-right">
       <table>
