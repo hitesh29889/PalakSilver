@@ -95,7 +95,7 @@
     @media print {
       body { background: #fff; padding: 10mm; }
       #add-form-wrap, #print-btn-wrap { display: none !important; }
-      .invoice-wrap { margin: 0; box-shadow: none; border: 2px solid #000; width: 100%; min-height: calc(297mm - 20mm); }
+      .invoice-wrap { margin: 0; box-shadow: none; border: 2px solid #000; width: 100%; /* min-height removed for iOS single-page print */ }
       .btn-del { display: none; }
       .no-print { display: none; }
       .editable-field { border-bottom: none; }
@@ -133,8 +133,10 @@
   </label>
 </div>
 
+
 <div id="print-btn-wrap">
-  <button class="btn btn-print" onclick="window.print()">Print / Save as PDF</button>
+  <button class="btn btn-print" onclick="window.print()">Print</button>
+  <button class="btn btn-print" style="margin-left:10px;background:#0097a7;" onclick="saveAsPDF()">Save as PDF</button>
 </div>
 
 <div class="invoice-wrap">
@@ -243,6 +245,11 @@
 </div>
 
 <script>
+  // Save as PDF function: opens print dialog and shows a hint for PDF
+  function saveAsPDF() {
+    alert('PDF બનાવા માટે પ્રિન્ટર ઓપ્શન માં "Save AS PDF" સિલેક્ટ કરો..');
+    window.print();
+  }
   function fmt(n) {
     return n.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   }
@@ -358,7 +365,7 @@
   }
 
   // Keep a few blank rows below items for visual spacing
-  var FIXED_ROWS = 20;
+  var FIXED_ROWS = 15;
   function fillEmptyRows() {
     var tbody = document.getElementById('itemBody');
     // Remove old filler rows
@@ -366,6 +373,7 @@
     var used = tbody.querySelectorAll('tr:not(.empty-row)').length;
     var cols = 8; // number of columns
     for (var i = used; i < FIXED_ROWS; i++) {
+
       var tr = document.createElement('tr');
       tr.className = 'empty-row';
       for (var c = 0; c < cols; c++) {
