@@ -95,11 +95,15 @@
     @media print {
       body { background: #fff; padding: 10mm; }
       #add-form-wrap, #print-btn-wrap { display: none !important; }
-      .invoice-wrap { margin: 0; box-shadow: none; border: 2px solid #000; width: 100%; /* min-height removed for iOS single-page print */ }
+      .invoice-wrap { margin: 0; box-shadow: none; border: 2px solid #000; width: 100%; min-height: calc(227mm - 20mm); /* min-height removed for iOS single-page print */ }
       .btn-del { display: none; }
       .no-print { display: none; }
       .editable-field { border-bottom: none; }
     }
+      /* Hide .no-print elements when .print-mode is applied to body (for PDF export) */
+      body.print-mode .no-print {
+        display: none !important;
+      }
   </style>
 </head>
 <body>
@@ -247,16 +251,23 @@
 <script>
   // Download PDF function using html2pdf.js
   function downloadPDF() {
-    var invoiceNoWithoutSpecialChar = document.getElementById('invoiceNo').textContent.trim().replace(/[^a-zA-Z0-9]/g, '_') || 'invoice';
-    var element = document.querySelector('.invoice-wrap');
-    var opt = {
-      margin:       0,
-      filename:     invoiceNoWithoutSpecialChar + '.pdf',
-      image:        { type: 'jpeg', quality: 0.98 },
-      html2canvas:  { scale: 2 },
-      jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
-    };
-    html2pdf().set(opt).from(element).save();
+      var invoiceNoWithoutSpecialChar = document.getElementById('invoiceNo').textContent.trim().replace(/[^a-zA-Z0-9]/g, '_') || 'invoice';
+      var element = document.querySelector('.invoice-wrap');
+      var opt = {
+        margin:       0,
+        filename:     invoiceNoWithoutSpecialChar + '.pdf',
+        image:        { type: 'jpeg', quality: 0.98 },
+        html2canvas:  { scale: 2 },
+        jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+      };
+      // Add print-mode class to body to hide .no-print elements
+      document.body.classList.add('print-mode');
+      html2pdf().set(opt).from(element).save().then(function() {
+        // Remove print-mode class after PDF is generated
+        document.body.classList.remove('print-mode');
+      }).catch(function() {
+        document.body.classList.remove('print-mode');
+      });
   }
   function fmt(n) {
     return n.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
