@@ -39,8 +39,8 @@
     .inv-type { text-align: center; font-size: 15px; font-weight: bold; letter-spacing: 2px; padding: 5px 0; border-bottom: 1.5px solid #000; }
 
     .inv-meta { display: flex; border-bottom: 1.5px solid #000; }
-    .inv-meta-left { flex: 1; padding: 8px 12px; border-right: 1.5px solid #000; }
-    .inv-meta-right { width: 240px; padding: 8px 12px; }
+    .inv-meta-left { flex: 1; padding: 8px 12px; }
+    .inv-meta-right { border-left: 1.5px solid #000; width: 240px; padding: 8px 12px; }
     .inv-meta-right table { width: 100%; }
     .inv-meta-right td { padding: 2px 0; vertical-align: top; font-size: 12px; }
     .inv-meta-right td:first-child { font-weight: bold; white-space: nowrap; padding-right: 4px; }
@@ -172,7 +172,8 @@
           Place of Supply : 09-Uttar Pradesh
           GSTIN No. : 09ADGPA8676H1Z9
         </textarea>
-    </div>
+      </div>
+      <div id="clientDetailsDisplay" style="width:100%;min-height:110px;font-size:13px;white-space:pre-line;display:none;padding:5px;"></div>
     <div class="inv-meta-right">
       <table>
         <tr><td>Invoice No.</td><td>: <span id="invoiceNo" contenteditable="true" class="editable-field">GT/4</span></td></tr>
@@ -263,12 +264,22 @@
         html2canvas:  { scale: 2 },
         jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
       };
+      // Swap textarea with display div for PDF (before html2pdf runs)
+      var textarea = document.getElementById('clientDetailsTextarea');
+      var displayDiv = document.getElementById('clientDetailsDisplay');
+      displayDiv.innerHTML = textarea.value.replace(/\n/g, '<br>');
+      textarea.style.display = 'none';
+      displayDiv.style.display = 'block';
       // Add print-mode class to body to hide .no-print elements
       document.body.classList.add('print-mode');
       html2pdf().set(opt).from(element).save().then(function() {
-        // Remove print-mode class after PDF is generated
+        // Restore textarea after PDF is generated
+        displayDiv.style.display = 'none';
+        textarea.style.display = 'block';
         document.body.classList.remove('print-mode');
       }).catch(function() {
+        displayDiv.style.display = 'none';
+        textarea.style.display = 'block';
         document.body.classList.remove('print-mode');
       });
   }
